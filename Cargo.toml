@@ -1,6 +1,6 @@
 [package]
 name = "unofficial-academia-clash-builder"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "An unofficial helper for generating Clash/mihomo YAML from Accademia templates and user-provided nodes."
 license = "MIT"

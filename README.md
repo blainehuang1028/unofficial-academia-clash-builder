@@ -49,9 +49,41 @@ When you load a template or node list by URL, your browser directly requests tha
 
 See [PRIVACY.md](./PRIVACY.md).
 
-## CLI Usage
+## Download and Run
 
-Install Rust, then run:
+You do not need Rust or any compilation step if you download a release package.
+
+1. Open the latest release:
+
+   ```text
+   https://github.com/blainehuang1028/unofficial-academia-clash-builder/releases/latest
+   ```
+
+2. Download the package for your system:
+
+   - macOS Apple Silicon: `unofficial-academia-clash-builder-macos-arm64.tar.gz`
+   - Linux x64: `unofficial-academia-clash-builder-linux-x64.tar.gz`
+   - Windows x64: `unofficial-academia-clash-builder-windows-x64.zip`
+
+3. Extract the package and run the included script:
+
+   macOS / Linux:
+
+   ```bash
+   ./run.sh --nodes ./nodes.yaml --output ./mobile.yaml --fallback-region US
+   ```
+
+   Windows PowerShell:
+
+   ```powershell
+   .\run.ps1 --nodes .\nodes.yaml --output .\mobile.yaml --fallback-region US
+   ```
+
+Each package also contains the compiled binary, run script, English and Chinese README files, release notes, license, notices, disclaimer, privacy policy, legal-use notes, and a `RUNNING.md` quick-start file.
+
+## CLI Usage for Developers
+
+If you want to build from source, install Rust, then run:
 
 ```bash
 cargo run -- \
@@ -94,11 +126,11 @@ Tagged releases are built by `.github/workflows/release.yml`.
 Create a release tag:
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+git tag vX.Y.Z
+git push origin vX.Y.Z
 ```
 
-The workflow builds CLI binaries for macOS, Linux, and Windows.
+The workflow builds ready-to-run CLI packages for macOS, Linux, and Windows. Users should download release assets rather than source archives.
 
 ## Important Limitations
 
