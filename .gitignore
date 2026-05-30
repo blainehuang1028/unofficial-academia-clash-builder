@@ -1,0 +1,7 @@
+/target/
+/.DS_Store
+*.log
+*.tmp
+dist/
+clash-output.yaml
+*-test-output.yaml

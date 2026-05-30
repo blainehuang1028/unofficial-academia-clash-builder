@@ -1,0 +1,75 @@
+name: Release CLI
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || \
+            gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md
+
+  build:
+    needs: create-release
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            asset_name: unofficial-academia-clash-builder-macos-arm64
+            binary_path: target/release/unofficial-academia-clash-builder
+            archive: unofficial-academia-clash-builder-macos-arm64.tar.gz
+          - os: ubuntu-latest
+            asset_name: unofficial-academia-clash-builder-linux-x64
+            binary_path: target/release/unofficial-academia-clash-builder
+            archive: unofficial-academia-clash-builder-linux-x64.tar.gz
+          - os: windows-latest
+            asset_name: unofficial-academia-clash-builder-windows-x64
+            binary_path: target/release/unofficial-academia-clash-builder.exe
+            archive: unofficial-academia-clash-builder-windows-x64.zip
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build
+        run: cargo build --release --locked
+
+      - name: Package Unix
+        if: runner.os != 'Windows'
+        run: |
+          mkdir -p dist "${{ matrix.asset_name }}"
+          cp "${{ matrix.binary_path }}" "${{ matrix.asset_name }}/"
+          cp README.md LICENSE DISCLAIMER.md PRIVACY.md LEGAL.md NOTICE.md "${{ matrix.asset_name }}/"
+          tar -czf "dist/${{ matrix.archive }}" "${{ matrix.asset_name }}"
+
+      - name: Package Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist, "${{ matrix.asset_name }}" | Out-Null
+          Copy-Item "${{ matrix.binary_path }}" "${{ matrix.asset_name }}/"
+          Copy-Item README.md, LICENSE, DISCLAIMER.md, PRIVACY.md, LEGAL.md, NOTICE.md "${{ matrix.asset_name }}/"
+          Compress-Archive -Path "${{ matrix.asset_name }}" -DestinationPath "dist/${{ matrix.archive }}" -Force
+
+      - name: Upload release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" dist/* --clobber

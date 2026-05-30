@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unofficial Accademia Clash Builder</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="title">
+          <h1>Unofficial Accademia Clash Builder</h1>
+          <p>基于 Accademia Clash Configuration Template 的非官方工具。导入模板和节点 YAML，生成完整 Clash/mihomo 配置；缺失节点信息的策略组会隐藏，分流规则保持不变。</p>
+        </div>
+        <div class="actions">
+          <button class="button" id="generate" type="button">生成 YAML</button>
+          <button class="button secondary" id="download" type="button" disabled>下载文件</button>
+        </div>
+      </header>
+
+      <section class="layout">
+        <div class="workspace">
+          <section class="panel">
+            <h2>模板 YAML</h2>
+            <div class="field preset-field">
+              <label for="template-preset">预设模板</label>
+              <select id="template-preset"></select>
+            </div>
+            <div class="source-grid">
+              <label class="dropzone" id="template-drop">
+                <input id="template-file" type="file" accept=".yaml,.yml,text/yaml,text/plain" />
+                <span>拖入模板文件或点击选择</span>
+              </label>
+              <div class="text-source">
+                <div class="field">
+                  <label for="template-url">模板 URL</label>
+                  <input id="template-url" type="url" placeholder="https://cdn.jsdelivr.net/gh/Accademia/Clash_Configuration_Template/[Mobile]-WhiteList-03-Non.AntiAD.yaml" />
+                </div>
+                <div class="field">
+                  <label for="template-text">粘贴模板内容</label>
+                  <textarea id="template-text" spellcheck="false" placeholder="port: 7890&#10;proxies:&#10;proxy-groups:"></textarea>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>节点 YAML</h2>
+            <div class="source-grid">
+              <label class="dropzone" id="nodes-drop">
+                <input id="nodes-file" type="file" accept=".yaml,.yml,text/yaml,text/plain" />
+                <span>拖入节点文件或点击选择</span>
+              </label>
+              <div class="text-source">
+                <div class="field">
+                  <label for="nodes-url">节点 URL</label>
+                  <input id="nodes-url" type="url" placeholder="https://example.com/nodes.yaml" />
+                </div>
+                <div class="field">
+                  <label for="nodes-text">粘贴节点内容</label>
+                  <textarea id="nodes-text" spellcheck="false" placeholder="proxies:&#10;  - name: VPS-[US]-VLESS-Reality"></textarea>
+                </div>
+              </div>
+            </div>
+            <p class="note">节点输入可留空；留空时会直接使用模板自身的 proxies。</p>
+          </section>
+
+          <section class="panel">
+            <h2>输出预览</h2>
+            <div class="field">
+              <textarea class="preview" id="output-preview" spellcheck="false" readonly></textarea>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side">
+          <section class="panel settings">
+            <h2>生成设置</h2>
+            <div class="field">
+              <label for="platform">平台名</label>
+              <input id="platform" value="mobile" />
+            </div>
+            <div class="field">
+              <label for="output-name">导出文件名</label>
+              <input id="output-name" />
+            </div>
+            <div class="field">
+              <label for="fallback-region">fallback 地区</label>
+              <select id="fallback-region">
+                <option value="auto">auto / all</option>
+                <option value="US" selected>US</option>
+                <option value="JP">JP</option>
+                <option value="UK">UK</option>
+                <option value="AU">AU</option>
+                <option value="HK">HK</option>
+                <option value="TW">TW</option>
+                <option value="SG">SG</option>
+                <option value="KR">KR</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fallback-group">fallback 策略组名</label>
+              <input id="fallback-group" />
+            </div>
+            <label class="switch">
+              <input id="hide-missing" type="checkbox" checked />
+              <span>缺失节点信息的策略组设为 hidden: true</span>
+            </label>
+          </section>
+
+          <div class="status" id="status">等待输入。</div>
+
+          <section class="panel">
+            <h2>报告</h2>
+            <div class="report" id="report"></div>
+          </section>
+        </aside>
+      </section>
+      <footer class="footer">
+        <span>Unofficial project. Template presets credit Accademia/Clash_Configuration_Template.</span>
+        <a href="https://github.com/Accademia/Clash_Configuration_Template" target="_blank" rel="noreferrer">Original templates</a>
+      </footer>
+    </main>
+
+    <script src="./vendor/js-yaml.min.js"></script>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+[package]
+name = "unofficial-academia-clash-builder"
+version = "0.1.0"
+edition = "2021"
+description = "An unofficial helper for generating Clash/mihomo YAML from Accademia templates and user-provided nodes."
+license = "MIT"
+repository = "https://github.com/blainehuang1028/unofficial-academia-clash-builder"
+
+[dependencies]
+regex = "1"
+serde_json = "1"
+serde_yaml = "0.9"
+ureq = { version = "2", default-features = true }
